@@ -1,0 +1,37 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "staging": "vite build --mode staging",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^6.0.1",
+    "axios": "^0.21.1",
+    "clipboard": "^2.0.8",
+    "echarts": "^5.0.2",
+    "js-cookie": "^2.2.1",
+    "qrcode-svg": "^1.1.0",
+    "storejs": "^1.1.0",
+    "vite-plugin-imp": "^2.0.5",
+    "vue": "^3.0.5",
+    "vue-router": "4",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@heroicons/vue": "^1.0.1",
+    "@tailwindcss/forms": "^0.3.3",
+    "@tailwindcss/postcss7-compat": "^2.2.4",
+    "@vitejs/plugin-vue": "^1.1.5",
+    "@vue/compiler-sfc": "^3.0.5",
+    "ant-design-vue": "^2.1.2",
+    "autoprefixer": "^9",
+    "dayjs": "^1.10.4",
+    "less": "^4.1.1",
+    "postcss": "^7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "vite": "^2.1.3"
+  }
+}

@@ -1,0 +1,20 @@
+# 应用名称
+app_name: TinyUrl
+app_mode: dev
+database:
+  #sqlite3,mysql
+  drive: sqlite3
+  datasource: /tmp/tinyurl.db
+  debug: true
+
+server:
+  external_url: http://127.0.0.1:3311
+  internal:
+    admin: root
+    password: root
+  csrf_token: token
+  hash:
+    hash_salt: NmZiZWUyN2E1YzgwZWU1ODU1ZTA5ODBkMjY2ZjIxOGU
+    hash_min_length: 5
+  http:
+    port: 3311

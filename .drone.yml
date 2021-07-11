@@ -1,0 +1,71 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+  - name: submodules
+    image: alpine/git
+    environment:
+      SSH_KEY:
+        from_secret: ssh_key
+    commands:
+      - mkdir -p /root/.ssh && touch /root/.ssh/id_rsa
+      - echo -n "$SSH_KEY" > /root/.ssh/id_rsa
+      - touch /root/.ssh/known_hosts
+      - chmod -R 600 /root/.ssh
+      - ssh-keyscan -H git.ifreegroup.cn > /etc/ssh/ssh_known_hosts 2> /dev/null
+      - git submodule update --init --recursive --remote --merge
+
+  - name: docker-latest
+    image: plugins/docker
+    settings:
+      username: 'robot$cicd'
+      password: d3rQY6Q2ffjHgRskRJbzBMaVKKfi32lA
+      repo: reg.ifreegroup.cn:8004/ifreeadmin/tinyurl
+      auto_tag: true
+      registry: reg.ifreegroup.cn:8004
+      mirror: https://hub-mirror.c.163.com
+      build_args:
+        - 'BUILD_MODE=build-staging'
+    when:
+      ref:
+        - refs/heads/master
+
+  - name: docker-tag
+    image: plugins/docker
+    settings:
+      username: 'robot$cicd'
+      password: d3rQY6Q2ffjHgRskRJbzBMaVKKfi32lA
+      repo: reg.ifreegroup.cn:8004/ifreeadmin/tinyurl
+      auto_tag: true
+      registry: reg.ifreegroup.cn:8004
+      mirror: https://hub-mirror.c.163.com
+      build_args:
+        - 'BUILD_MODE=build'
+    when:
+      ref:
+        - refs/tags/*
+
+  - name: deploy test
+    image: appleboy/drone-ssh:1.5.1-linux-amd64
+    settings:
+      host: 47.112.118.53
+      username: root
+      key:
+        from_secret: ssh_key
+      port: 22
+      command_timeout: 10m
+      script:
+        - cd /www/wwwroot/tinyurl.ifreegroup.net && docker-compose pull
+        - cd /www/wwwroot/tinyurl.ifreegroup.net && docker-compose up --force-recreate -d
+    when:
+      ref:
+        - refs/heads/master
+
+trigger:
+  ref:
+    - refs/tags/*
+    - refs/heads/master
+  event:
+    - push
+    - tag
