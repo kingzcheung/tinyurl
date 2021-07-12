@@ -1,23 +1,23 @@
 import {createStore} from 'vuex'
-import storejs from 'storejs'
+import Cookies from 'js-cookie'
 
 
 export default createStore({
     state() {
         return {
-            user: {},
+            uid: 0,
         }
     },
     mutations: {
-        GET_USER(state, data) {
-            state.user = data
+        GET_UID(state, data) {
+            state.uid = data
         },
     },
     actions: {
-        get_user({commit}) {
-            const user_info = storejs.get('user_info')
-            if (user_info) {
-                commit('GET_USER', user_info)
+        get_uid({commit}) {
+            const uid = Cookies.get('uid')
+            if (uid) {
+                commit('GET_UID', uid)
             }
         },
     }

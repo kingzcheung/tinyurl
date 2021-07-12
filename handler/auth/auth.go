@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/kingzcheung/tinyurl"
@@ -98,6 +99,15 @@ func handleLogin(manager *scs.SessionManager, userStore core.UserStore) http.Han
 		}
 
 		manager.Put(r.Context(), "username", user.Username)
+
+		cookie := &http.Cookie{
+			Name:   "uid",
+			Value:  fmt.Sprintf("%d", user.UserID),
+			Path:   "/",
+			MaxAge: 60 * 24,
+		}
+
+		http.SetCookie(w, cookie)
 
 		http.Redirect(w, r, "/", http.StatusFound)
 	}

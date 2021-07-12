@@ -2,9 +2,11 @@ package url
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"github.com/kingzcheung/tinyurl/config"
 	"github.com/kingzcheung/tinyurl/core"
+	"github.com/kingzcheung/tinyurl/handler/render"
+	url2 "github.com/kingzcheung/tinyurl/store/url"
 	"github.com/speps/go-hashids"
 	"gorm.io/gorm"
 	"io"
@@ -21,32 +23,35 @@ func Shorten(urlStore core.UrlStore, hashid *hashids.HashID) http.HandlerFunc {
 
 		err := parseJson(r.Body, &url)
 		if err != nil {
-			_, _ = fmt.Fprint(w, err.Error())
+			render.Error(w, err.Error(), 400)
 			return
 		}
 
 		u, err := urlStore.Create(r.Context(), &url)
 
 		if err != nil {
-			_, _ = fmt.Fprint(w, err.Error())
+			if errors.Is(err, url2.ErrDataDuplication) {
+				render.Error(w, err.Error(), 400)
+				return
+			}
+			render.Error(w, "server error", 500)
 			return
 		}
 
 		if u.Slug == "" {
 			slug, err := hashid.Encode([]int{u.UrlID})
 			if err != nil {
-				_, _ = fmt.Fprint(w, err.Error())
+				render.Error(w, err.Error(), 400)
 				return
 			}
 
 			err = urlStore.UpdateSlug(r.Context(), u.UrlID, slug)
 			if err != nil {
-				_, _ = fmt.Fprint(w, err.Error())
+				render.Error(w, err.Error(), 400)
 				return
 			}
 			url.Slug = slug
 		}
-
 
 		url.UrlID = 0
 		Json(w, url)
@@ -83,7 +88,7 @@ func List(urlStore core.UrlStore) http.HandlerFunc {
 		w.Header().Set("X-Page-Total", strconv.FormatInt(count, 10))
 		data, _ := json.Marshal(urls)
 
-		_, _ = w.Write(data)
+		render.Json(w, data, 200)
 	}
 }
 

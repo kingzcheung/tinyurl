@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/golang/groupcache"
-	"gorm.io/gorm"
 	"github.com/kingzcheung/tinyurl/config"
+	"gorm.io/gorm"
 	"net/http"
 )
 

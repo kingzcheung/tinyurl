@@ -5,8 +5,14 @@
                 <logo/>
             </div>
             <div class="py-8">
-                <router-link v-if="userInfo" :to="{name:'Url'}" style="color: white" class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">URL 管理</router-link>
-                <router-link v-else :to="{name:'Login'}" style="color: white" class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">Log in / Sign up</router-link>
+                <router-link v-if="uid>0" :to="{name:'Url'}" style="color: white"
+                             class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">
+                    URL 管理
+                </router-link>
+                <router-link v-else :to="{name:'Login'}" style="color: white"
+                             class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">
+                    Log in / Sign up
+                </router-link>
             </div>
         </div>
         <div class="container mx-auto flex flex-row align-center justify-center mt-10">
@@ -107,10 +113,9 @@
 import {computed, defineComponent, onMounted, reactive, toRefs} from 'vue'
 import {apiShorten} from "../model/model";
 import ClipboardJS from "clipboard"
-import {useRoute, useRouter} from "vue-router";
 import Logo from "../components/Logo.vue";
 import QRCode from 'qrcode-svg'
-import {message} from 'ant-design-vue';
+import {useStore} from "vuex";
 
 
 const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/i
@@ -133,7 +138,11 @@ export default defineComponent({
                 name: ''
             }
         })
-        const route = useRoute();
+        const store = useStore()
+
+        store.dispatch('get_uid')
+
+        const uid = computed(() => store.state.uid)
 
         const redirectPrefix = computed(() => {
             return `${location.origin}/r/`
@@ -143,9 +152,6 @@ export default defineComponent({
             return redirectPrefix.value + state.hash
         })
 
-        const userInfo = computed(()=>{
-
-        })
 
         const onClick = () => {
             if (state.form.url.trim().length === 0) return;
@@ -180,8 +186,9 @@ export default defineComponent({
 
         onMounted(() => {
             const clip = new ClipboardJS("#copy")
-            clip.on("success", () => {
-                message.success('Copy success!');
+            clip.on("success", e => {
+                alert('Copy success!')
+                e.clearSelection();
             })
 
         })
@@ -191,7 +198,7 @@ export default defineComponent({
             ...toRefs(state),
             redirectPrefix,
             redirectUrl,
-            userInfo,
+            uid,
         }
     }
 })

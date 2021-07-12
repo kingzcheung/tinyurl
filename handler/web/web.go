@@ -10,6 +10,8 @@ import (
 	"github.com/kingzcheung/tinyurl/static"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"path"
 )
 
@@ -47,13 +49,13 @@ func (s *Server) Handle() http.Handler {
 func handlerIndex(mode string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// dev debug
-		//if mode == "dev" {
-		//	frontEndUrl := "http://127.0.0.1:3000"
-		//	remote, _ := url.Parse(frontEndUrl)
-		//	proxy := httputil.NewSingleHostReverseProxy(remote)
-		//	proxy.ServeHTTP(w, r)
-		//	return
-		//}
+		if mode == "dev" {
+			frontEndUrl := "http://127.0.0.1:3000"
+			remote, _ := url.Parse(frontEndUrl)
+			proxy := httputil.NewSingleHostReverseProxy(remote)
+			proxy.ServeHTTP(w, r)
+			return
+		}
 
 		uri := r.URL.Path
 		if uri == "/" {

@@ -2,6 +2,7 @@ package url
 
 import (
 	"context"
+	"errors"
 	"github.com/kingzcheung/tinyurl/core"
 	"gorm.io/gorm"
 	"time"
@@ -23,7 +24,18 @@ func (s *urlStore) UpdateSlug(ctx context.Context, id int, slug string) error {
 		Error
 }
 
+var (
+	ErrDataDuplication = errors.New("data duplication")
+)
+
 func (s *urlStore) Create(ctx context.Context, url *core.Url) (*core.Url, error) {
+	var u core.Url
+	if url.Type == 1 {
+		s.db.WithContext(ctx).Where("slug", url.Slug).First(&u)
+		if u.UrlID > 0 {
+			return nil, ErrDataDuplication
+		}
+	}
 	if url.CreatedAt == 0 {
 		url.CreatedAt = time.Now().Unix()
 	}

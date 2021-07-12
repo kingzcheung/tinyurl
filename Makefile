@@ -6,9 +6,9 @@ GO_MAIN=./cmd/tinyurl/main.go
 
 default: build
 
-build: build-web proto build-linux
+build: build-web build-linux
 
-build-staging: build-web-staging proto build-linux
+build-staging: build-web-staging build-linux
 
 build-web-staging:
 	cd web && yarn --registry=https://registry.npm.taobao.org/ && yarn run staging
@@ -21,11 +21,3 @@ build-web:
 build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOCMD) build -ldflags="-w -s" -o ./dist/bin/$(BINARY_NAME) $(GO_MAIN)
 
-
-proto:
-	protoc --go_out=pbgen \
-		--go_opt=paths=source_relative \
-		--proto_path=./pb/authcenter \
-        --go-grpc_out=pbgen \
-        --go-grpc_opt=paths=source_relative \
-         auth.proto

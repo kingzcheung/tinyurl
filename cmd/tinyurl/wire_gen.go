@@ -27,14 +27,14 @@ func InitializeApp(config2 *config.Config) (*app, error) {
 	if err != nil {
 		return nil, err
 	}
-	server := api.NewServer(urlStore, userStore, hashID)
-	health := healthProvide()
-	group := provideUrlCache(urlStore)
-	webServer := web.NewServer(group, config2)
 	sessionManager, err := provideSession(config2, db)
 	if err != nil {
 		return nil, err
 	}
+	server := api.NewServer(urlStore, userStore, hashID, sessionManager)
+	health := healthProvide()
+	group := provideUrlCache(urlStore)
+	webServer := web.NewServer(group, config2)
 	authServer := auth.NewServer(userStore, sessionManager, config2)
 	mux := provideRouter(server, health, webServer, authServer)
 	httpServer := provideServer(mux, config2, sessionManager)
