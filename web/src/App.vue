@@ -15,12 +15,6 @@ html,body {
 html,body,#app {
     height: 100%;
 }
-a {
-    text-decoration: none;
-  &:active,&:focus,&:link,&:visited {
-    color: #555555;
-  }
-}
 #app {
   position: relative;
 }

@@ -1,34 +1,41 @@
 <template>
-<div class="flex flex-row align-center">
-    <em class="t">T</em>iny <em class="u">U</em>RL
-</div>
+    <div class="flex flex-row align-center" :class="{'white':white}">
+        <em class="t">T</em>iny <em class="u">U</em>RL
+    </div>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
 
-export default defineComponent({})
+export default defineComponent({
+    props: {
+        white: {
+            type: Boolean,
+            default: () => false
+        }
+    }
+})
 </script>
 
 <style scoped>
 em {
-  font-style: normal;
+    font-style: normal;
 }
 
 .t {
-  color: #2196f3;
+    color: #2196f3;
 }
 
 .u {
-  color: blueviolet;
+    color: blueviolet;
 }
 
 .default {
-  color: #333333;
-  font-weight: bold;
+    color: #333333;
+    font-weight: bold;
 }
 
 .white {
-  color: #eee;
+    color: #eee;
 }
 </style>

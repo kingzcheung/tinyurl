@@ -5,9 +5,9 @@
                 <logo/>
             </div>
             <div class="py-8">
-                <router-link v-if="uid>0" :to="{name:'Url'}" style="color: white"
+                <router-link v-if="uid>0" :to="{name:'Link'}" style="color: white"
                              class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">
-                    URL 管理
+                    Links
                 </router-link>
                 <router-link v-else :to="{name:'Login'}" style="color: white"
                              class="text-white text-sm py-2.5 px-4 rounded-md bg-indigo-500 focus:ring focus:ring-indigo-500 ring-offset-2 ring-offset-indigo-100 shadow-xl">
@@ -90,7 +90,7 @@
 
             <div class="p-4 w-2/4 bg-white rounded-md shadow" v-if="hash.length>0">
                 <div class="clipboard relative">
-                    <div class="text-align bg-gray-100 p-2 py-4 rounded">{{ redirectUrl }}</div>
+                    <div class="text-center bg-gray-100 p-2 py-4 rounded">{{ redirectUrl }}</div>
                     <button type="button" id="copy" class="absolute right-1 top-1" :data-clipboard-text="redirectUrl">
                         <svg t="1625819700101" class="icon" viewBox="0 0 1024 1024" version="1.1"
                              xmlns="http://www.w3.org/2000/svg" p-id="5334" width="24" height="24">
